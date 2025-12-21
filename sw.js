@@ -1,5 +1,5 @@
 // 每次你修改了 index.html，请把这里的版本号 +1 (例如 v6 改为 v7)
-const CACHE_NAME = 'energetic-stocktake-v3';
+const CACHE_NAME = 'energetic-stocktake-v4';
 
 // 需要缓存的资源列表
 const urlsToCache = [
@@ -51,3 +51,4 @@ self.addEventListener('fetch', (event) => {
       })
   );
 });
+
