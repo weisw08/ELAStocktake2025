@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,90 +14,79 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
 
     <style>
-        :root { --energetic-blue: #003399; --success-green: #28a745; --bg-white: #ffffff; }
+        :root { 
+            --energetic-blue: #003399; 
+            --cornflower-blue: #6495ED; /* 矢车菊蓝 */
+            --success-green: #28a745; 
+            --bg-white: #ffffff; 
+        }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg-white); margin: 0; padding: 0; }
         
-        /* 首页布局 */
+        /* 首页布局保持原样 */
         #screen-welcome { 
             text-align: center; padding: 20px; background: var(--bg-white); height: 100vh; 
             box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
             padding-top: 15vh; position: fixed; width: 100%; top: 0; z-index: 2000;
         }
-        
         .logo-box { margin-bottom: 40px; }
         .logo-text { color: var(--energetic-blue); font-size: 54px; font-weight: 900; font-style: italic; letter-spacing: -2px; margin: 0; line-height: 1; }
         .logo-sub { color: #666; font-size: 14px; text-transform: uppercase; letter-spacing: 5px; margin-top: 18px; }
-
-        /* STOCKTAKE 2025 特效 */
         .ml1 { font-weight: 900; font-size: 2.0em; color: var(--energetic-blue); position: relative; margin: 0; min-height: 1.2em; }
         .ml1 .letter { display: inline-block; line-height: 1em; }
 
         select { 
             width: 100%; max-width: 280px; padding: 15px; border-radius: 12px; 
             border: 2.5px solid var(--energetic-blue); font-size: 16px; margin-top: 60px; margin-bottom: 25px; 
-            background: white; color: var(--energetic-blue); font-weight: bold; outline: none; -webkit-appearance: none;
+            background: white; color: var(--energetic-blue); font-weight: bold; outline: none;
         }
-        
         .btn-start { 
             background: var(--energetic-blue); color: white; padding: 16px 85px; border-radius: 35px; 
-            border: none; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,51,153,0.3);
+            border: none; font-size: 18px; font-weight: bold; cursor: pointer;
         }
 
-        /* 填报页容器 */
+        /* 填报页 */
         #screen-list { background: var(--bg-white); min-height: 100vh; padding-top: 60px; box-sizing: border-box; }
-
-        /* 顶部固定栏 */
         .top-bar { 
-            position: fixed; top: 0; width: 100%; height: 60px; background: rgba(255,255,255,0.98); 
+            position: fixed; top: 0; width: 100%; height: 60px; background: white; 
             display: flex; align-items: center; justify-content: space-between; padding: 0 15px; 
             box-sizing: border-box; z-index: 1000; border-bottom: 2px solid var(--energetic-blue); 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .btn-export-email { background: var(--success-green); color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+
+        /* Location 区域：矢车菊蓝方案 */
+        .loc-header { 
+            background: var(--cornflower-blue); 
+            color: white; padding: 10px 15px; font-size: 14px; font-weight: bold; 
+            position: sticky; top: 60px; z-index: 90; 
+            letter-spacing: 1px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        /* 导出按钮：绿色风格 */
-        .btn-export-email { 
-            background: var(--success-green); color: white; border: none; padding: 8px 12px; 
-            border-radius: 6px; font-size: 11px; font-weight: bold; white-space: nowrap;
-            box-shadow: 0 2px 4px rgba(40,167,69,0.2);
-        }
-
-        .loc-header { background: var(--energetic-blue); color: white; padding: 12px 15px; font-size: 15px; font-weight: bold; position: sticky; top: 60px; z-index: 90; }
         .item-row { background: white; display: flex; align-items: center; padding: 12px 15px; border-bottom: 1px solid #f0f0f0; }
         .item-code { flex: 1; font-family: 'SF Mono', monospace; font-size: 16px; font-weight: 600; color: #333; }
-        .input-qty { width: 95px; height: 40px; border: 2px solid #ddd; border-radius: 8px; text-align: center; font-size: 20px; color: var(--energetic-blue); font-weight: bold; }
         
+        /* 数量输入框：强制正整数 */
+        .input-qty { 
+            width: 95px; height: 40px; border: 2px solid #ddd; border-radius: 8px; 
+            text-align: center; font-size: 20px; color: var(--energetic-blue); font-weight: bold; 
+        }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
 <div id="screen-welcome">
-    <div class="logo-box">
-        <div class="logo-text">Energetic</div>
-        <div class="logo-sub">Smarter Lighting</div>
-    </div>
-    
-    <h1 class="ml1">
-      <span class="text-wrapper">
-        <span class="letters">STOCKTAKE 2025</span>
-      </span>
-    </h1>
-    
+    <div class="logo-box"><div class="logo-text">Energetic</div><div class="logo-sub">Smarter Lighting</div></div>
+    <h1 class="ml1"><span class="text-wrapper"><span class="letters">STOCKTAKE 2025</span></span></h1>
     <select id="auditor-select">
         <option value="">-- CHOOSE YOUR ID --</option>
-        <script>
-            for(let i=1; i<=20; i++) { 
-                let id = "Aud." + (i < 10 ? "0" + i : i); 
-                document.write(`<option value="${id}">${id}</option>`); 
-            }
-        </script>
+        <script>for(let i=1; i<=20; i++){ let id="Aud."+(i<10?"0"+i:i); document.write(`<option value="${id}">${id}</option>`); }</script>
     </select>
     <button class="btn-start" onclick="startAudit()">START</button>
 </div>
 
 <div id="screen-list" class="hidden">
     <div class="top-bar">
-        <span id="display-id" style="font-weight: 900; color: var(--energetic-blue); font-size: 16px;"></span>
+        <span id="display-id" style="font-weight: 900; color: var(--energetic-blue);"></span>
         <button class="btn-export-email" onclick="exportData()">EXPORT & EMAIL</button>
         <span id="stat" style="font-size: 12px; font-weight: bold; color: #999;"></span>
     </div>
@@ -104,23 +94,17 @@
 </div>
 
 <script>
-    // 动画逻辑
     function initAnim() {
         var textWrapper = document.querySelector('.ml1 .letters');
         textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
-        anime.timeline({loop: true})
-          .add({ targets: '.ml1 .letter', scale: [0.3,1], opacity: [0,1], translateZ: 0, easing: "easeOutExpo", duration: 600, delay: (el, i) => 70 * (i+1) })
-          .add({ targets: '.ml1', opacity: 0, duration: 1000, easing: "easeOutExpo", delay: 3500 });
+        anime.timeline({loop: true}).add({ targets: '.ml1 .letter', scale: [0.3,1], opacity: [0,1], translateZ: 0, easing: "easeOutExpo", duration: 600, delay: (el, i) => 70 * (i+1) }).add({ targets: '.ml1', opacity: 0, duration: 1000, easing: "easeOutExpo", delay: 3500 });
     }
     window.onload = initAnim;
 
-    // Service Worker
-    if ('serviceWorker' in navigator) { 
-        window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); 
-    }
+    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); }
 
     // --- 数据区 (粘贴 3000 行 JSON) ---
-const masterData = [
+    const masterData = [
     {
         "Auditor": "Aud.01",
         "Location": "U1-A-01-02",
@@ -11603,19 +11587,14 @@ const masterData = [
     }
 ];
 
-    let currentAuditor = "";
-    let myTasks = [];
+    let currentAuditor = ""; let myTasks = [];
 
     function startAudit() {
-        currentAuditor = document.getElementById('auditor-select').value;
-        if(!currentAuditor) return alert("Please select Auditor ID");
-        
-        myTasks = masterData.filter(d => d.Auditor === currentAuditor);
-        document.getElementById('display-id').innerText = currentAuditor;
-        
+        let aud = document.getElementById('auditor-select').value;
+        if(!aud) return alert("Select ID");
+        currentAuditor = aud; myTasks = masterData.filter(d => d.Auditor === aud);
+        document.getElementById('display-id').innerText = aud;
         render();
-        
-        // 关键逻辑：隐藏首页，显示列表，并强制置顶
         document.getElementById('screen-welcome').classList.add('hidden');
         document.getElementById('screen-list').classList.remove('hidden');
         window.scrollTo(0, 0);
@@ -11625,17 +11604,16 @@ const masterData = [
         const target = document.getElementById('render-target');
         const saved = JSON.parse(localStorage.getItem('audit_' + currentAuditor) || "{}");
         let html = ''; let lastLoc = ''; let done = 0;
-        
         myTasks.forEach(item => {
-            if(item.Location !== lastLoc) { 
-                html += `<div class="loc-header">${item.Location}</div>`; 
-                lastLoc = item.Location; 
-            }
+            if(item.Location !== lastLoc) { html += `<div class="loc-header">${item.Location}</div>`; lastLoc = item.Location; }
             let val = saved[item.Code] || ""; if(val !== "") done++;
+            // 重点：使用 type="tel" + 正则过滤，实现严格正整数输入
             html += `
                 <div class="item-row">
                     <div class="item-code">${item.Code}</div>
-                    <input type="number" class="input-qty" value="${val}" oninput="save('${item.Code}', this.value)" inputmode="decimal" placeholder="0">
+                    <input type="tel" class="input-qty" value="${val}" 
+                        oninput="this.value=this.value.replace(/\\D/g,''); save('${item.Code}', this.value)" 
+                        placeholder="0">
                 </div>`;
         });
         target.innerHTML = html;
@@ -11646,29 +11624,18 @@ const masterData = [
         let saved = JSON.parse(localStorage.getItem('audit_' + currentAuditor) || "{}");
         saved[code] = val;
         localStorage.setItem('audit_' + currentAuditor, JSON.stringify(saved));
-        const done = Object.values(saved).filter(v => v !== "").length;
-        document.getElementById('stat').innerText = `${done}/${myTasks.length}`;
+        document.getElementById('stat').innerText = `${Object.values(saved).filter(v=>v!=="").length}/${myTasks.length}`;
     }
 
     async function exportData() {
         const saved = JSON.parse(localStorage.getItem('audit_' + currentAuditor) || "{}");
-        const results = myTasks.map(item => ({ 
-            "Auditor": item.Auditor, "Location": item.Location, "Code": item.Code, "Count": saved[item.Code] || 0 
-        }));
-        
+        const results = myTasks.map(item => ({ "Auditor": item.Auditor, "Location": item.Location, "Code": item.Code, "Count": saved[item.Code] || 0 }));
         const ws = XLSX.utils.json_to_sheet(results);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Stocktake");
         const buf = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-        const fileName = `Stock_${currentAuditor}.xlsx`;
-        const file = new File([buf], fileName, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-        
-        // 唤起手机原生分享（包含微信、邮件、AirDrop等）
-        if (navigator.share) { 
-            try { await navigator.share({ files: [file], title: 'Stocktake Result', text: 'Attached is the stocktake file.' }); } catch (err) {} 
-        } else { 
-            XLSX.writeFile(wb, fileName); 
-        }
+        const file = new File([buf], `Stock_${currentAuditor}.xlsx`, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+        if (navigator.share) { await navigator.share({ files: [file], title: 'Stocktake Result' }); } else { XLSX.writeFile(wb, `Stock_${currentAuditor}.xlsx`); }
     }
 </script>
 </body>
