@@ -4,55 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Energetic Stocktake 2025</title>
+    
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=E&background=003399&color=fff&size=192">
+    <meta name="theme-color" content="#003399">
+
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+
     <style>
         :root { --energetic-blue: #003399; --bg-white: #ffffff; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg-white); margin: 0; padding: 0; overflow-x: hidden; }
         
-        /* 首页布局 */
+        /* 首页布局：整体上移 */
         #screen-welcome { 
             text-align: center; padding: 20px; background: var(--bg-white); height: 100vh; 
-            box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
+            padding-top: 15vh; 
         }
         
-        .logo-box { margin-bottom: 60px; transform: translateY(-30px); }
-        .logo-text { color: var(--energetic-blue); font-size: 52px; font-weight: 900; font-style: italic; letter-spacing: -2px; margin: 0; }
-        .logo-sub { color: #666; font-size: 14px; text-transform: uppercase; letter-spacing: 5px; margin-top: 25px; }
+        .logo-box { margin-bottom: 40px; }
+        .logo-text { color: var(--energetic-blue); font-size: 54px; font-weight: 900; font-style: italic; letter-spacing: -2px; margin: 0; line-height: 1; }
+        .logo-sub { color: #666; font-size: 14px; text-transform: uppercase; letter-spacing: 5px; margin-top: 18px; }
 
-        /* STOCKTAKE 2025 特效样式 */
-        .ml1 { font-weight: 900; font-size: 2.2em; color: var(--energetic-blue); position: relative; min-height: 1.5em; }
+        /* STOCKTAKE 2025 特效 (无横线版) */
+        .ml1 { font-weight: 900; font-size: 2.0em; color: var(--energetic-blue); position: relative; margin: 0; min-height: 1.2em; }
         .ml1 .letter { display: inline-block; line-height: 1em; }
-        .ml1 .text-wrapper { position: relative; display: inline-block; padding: 0.2em 0; }
-        .ml1 .line { opacity: 0; position: absolute; left: 0; height: 3px; width: 100%; background-color: var(--energetic-blue); }
-        .ml1 .line1 { top: 0; }
-        .ml1 .line2 { bottom: 0; }
 
         select { 
             width: 100%; max-width: 280px; padding: 15px; border-radius: 12px; 
-            border: 2px solid var(--energetic-blue); font-size: 16px; margin-top: 40px; margin-bottom: 30px; 
+            border: 2.5px solid var(--energetic-blue); font-size: 16px; margin-top: 60px; margin-bottom: 25px; 
             background: white; color: var(--energetic-blue); font-weight: bold; outline: none; -webkit-appearance: none;
         }
         
         .btn-start { 
-            background: var(--energetic-blue); color: white; padding: 16px 80px; border-radius: 35px; 
+            background: var(--energetic-blue); color: white; padding: 16px 85px; border-radius: 35px; 
             border: none; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,51,153,0.3);
         }
 
-        /* 填写界面顶部栏 */
+        /* 清单填报页样式 */
         .top-bar { 
             position: fixed; top: 0; width: 100%; height: 55px; background: rgba(255,255,255,0.98); 
-            display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 15px; box-sizing: border-box; z-index: 1000; border-bottom: 2px solid var(--energetic-blue);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 15px; 
+            box-sizing: border-box; z-index: 1000; border-bottom: 2px solid var(--energetic-blue); 
         }
         .btn-mini-export { background: var(--energetic-blue); color: white; border: none; padding: 6px 15px; border-radius: 6px; font-size: 12px; font-weight: bold; }
-        
-        /* 列表内容 */
         .loc-header { background: var(--energetic-blue); color: white; padding: 12px 15px; font-size: 15px; font-weight: bold; position: sticky; top: 55px; z-index: 90; }
         .item-row { background: white; display: flex; align-items: center; padding: 12px 15px; border-bottom: 1px solid #f0f0f0; }
-        .item-code { flex: 1; font-family: 'SF Mono', monospace; font-size: 16px; font-weight: 600; color: #333; }
+        .item-code { flex: 1; font-family: 'SF Mono', monospace; font-size: 16px; font-weight: 600; }
         .input-qty { width: 95px; height: 40px; border: 2px solid #ddd; border-radius: 8px; text-align: center; font-size: 20px; color: var(--energetic-blue); font-weight: bold; }
-        
         .hidden { display: none; }
     </style>
 </head>
@@ -66,18 +66,16 @@
     
     <h1 class="ml1">
       <span class="text-wrapper">
-        <span class="line line1"></span>
         <span class="letters">STOCKTAKE 2025</span>
-        <span class="line line2"></span>
       </span>
     </h1>
     
     <select id="auditor-select">
         <option value="">-- CHOOSE YOUR ID --</option>
         <script>
-            for(let i=1; i<=20; i++) {
-                let id = "Aud." + (i < 10 ? "0" + i : i);
-                document.write(`<option value="${id}">${id}</option>`);
+            for(let i=1; i<=20; i++) { 
+                let id = "Aud." + (i < 10 ? "0" + i : i); 
+                document.write(`<option value="${id}">${id}</option>`); 
             }
         </script>
     </select>
@@ -94,25 +92,25 @@
 </div>
 
 <script>
-    // 1. 动画脚本
+    // 动画初始化
     function initAnim() {
         var textWrapper = document.querySelector('.ml1 .letters');
         textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
         anime.timeline({loop: true})
           .add({ targets: '.ml1 .letter', scale: [0.3,1], opacity: [0,1], translateZ: 0, easing: "easeOutExpo", duration: 600, delay: (el, i) => 70 * (i+1) })
-          .add({ targets: '.ml1 .line', scaleX: [0,1], opacity: [0.5,1], easing: "easeOutExpo", duration: 700, offset: '-=875', delay: (el, i, l) => 80 * (l - i) })
-          .add({ targets: '.ml1', opacity: 0, duration: 1000, easing: "easeOutExpo", delay: 3000 });
+          .add({ targets: '.ml1', opacity: 0, duration: 1000, easing: "easeOutExpo", delay: 3500 });
     }
     window.onload = initAnim;
 
-    // 2. 离线支持
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
+    // 注册离线服务
+    if ('serviceWorker' in navigator) { 
+        window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); 
     }
 
-    // 3. 数据 (此处由Python生成后替换)
+    // --- 数据区：在此处粘贴 Python 转换后的内容 ---
     const masterData = [
-        {"Auditor": "Aud.01", "Location": "U1-A-01-01", "Code": "EXAMPLE123"}
+        {"Auditor": "Aud.01", "Location": "U1-A-01-01", "Code": "EXAMPLE-STOCK-CODE"}
+        // ... 继续粘贴 3000 行
     ];
 
     let currentAuditor = "";
@@ -126,6 +124,7 @@
         render();
         document.getElementById('screen-welcome').classList.add('hidden');
         document.getElementById('screen-list').classList.remove('hidden');
+        window.scrollTo(0,0);
     }
 
     function render() {
@@ -133,13 +132,16 @@
         const saved = JSON.parse(localStorage.getItem('audit_' + currentAuditor) || "{}");
         let html = ''; let lastLoc = ''; let done = 0;
         myTasks.forEach(item => {
-            if(item.Location !== lastLoc) {
-                html += `<div class="loc-header">${item.Location}</div>`;
-                lastLoc = item.Location;
+            if(item.Location !== lastLoc) { 
+                html += `<div class="loc-header">${item.Location}</div>`; 
+                lastLoc = item.Location; 
             }
-            let val = saved[item.Code] || "";
-            if(val !== "") done++;
-            html += `<div class="item-row"><div class="item-code">${item.Code}</div><input type="number" class="input-qty" value="${val}" oninput="save('${item.Code}', this.value)" inputmode="decimal"></div>`;
+            let val = saved[item.Code] || ""; if(val !== "") done++;
+            html += `
+                <div class="item-row">
+                    <div class="item-code">${item.Code}</div>
+                    <input type="number" class="input-qty" value="${val}" oninput="save('${item.Code}', this.value)" inputmode="decimal">
+                </div>`;
         });
         target.innerHTML = html;
         document.getElementById('stat').innerText = `${done}/${myTasks.length}`;
@@ -155,14 +157,20 @@
 
     async function exportData() {
         const saved = JSON.parse(localStorage.getItem('audit_' + currentAuditor) || "{}");
-        const results = myTasks.map(item => ({ "Auditor": item.Auditor, "Location": item.Location, "Code": item.Code, "Count": saved[item.Code] || 0 }));
+        const results = myTasks.map(item => ({ 
+            "Auditor": item.Auditor, "Location": item.Location, "Code": item.Code, "Count": saved[item.Code] || 0 
+        }));
         const ws = XLSX.utils.json_to_sheet(results);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Stocktake");
         const buf = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-        const fileName = `Stock_${currentAuditor}.xlsx`;
-        const file = new File([buf], fileName, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-        if (navigator.share) { try { await navigator.share({ files: [file], title: 'Result' }); } catch (err) {} } else { XLSX.writeFile(wb, fileName); }
+        const file = new File([buf], `Stock_${currentAuditor}.xlsx`, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+        
+        if (navigator.share) { 
+            try { await navigator.share({ files: [file], title: 'Stocktake Result' }); } catch (err) {} 
+        } else { 
+            XLSX.writeFile(wb, `Stock_${currentAuditor}.xlsx`); 
+        }
     }
 </script>
 </body>
