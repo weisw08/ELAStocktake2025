@@ -1,4 +1,4 @@
-const CACHE_NAME = 'energetic-stocktake-final';
+const CACHE_NAME = 'energetic-stocktake-v1';
 const ASSETS = [
   './',
   './index.html',
@@ -19,4 +19,5 @@ self.addEventListener('fetch', (event) => {
       return response || fetch(event.request);
     })
   );
+
 });
