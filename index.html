@@ -1,73 +1,49 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Energetic Stocktake 2025</title>
-    
     <link rel="manifest" href="./manifest.json">
-    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=E&background=003399&color=fff&size=192">
-    <meta name="theme-color" content="#003399">
-
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
 
     <style>
         :root { 
             --energetic-blue: #003399; 
-            --cornflower-blue: #6495ED; /* 矢车菊蓝 */
+            --cornflower-blue: #6495ED; 
             --success-green: #28a745; 
-            --bg-white: #ffffff; 
         }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg-white); margin: 0; padding: 0; }
+        body { font-family: sans-serif; margin: 0; background: #fff; }
         
-        /* 首页布局保持原样 */
+        /* 首页保持原样 */
         #screen-welcome { 
-            text-align: center; padding: 20px; background: var(--bg-white); height: 100vh; 
-            box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
-            padding-top: 15vh; position: fixed; width: 100%; top: 0; z-index: 2000;
+            text-align: center; padding-top: 15vh; position: fixed; width: 100%; height: 100vh; background: #fff; z-index: 2000;
         }
-        .logo-box { margin-bottom: 40px; }
-        .logo-text { color: var(--energetic-blue); font-size: 54px; font-weight: 900; font-style: italic; letter-spacing: -2px; margin: 0; line-height: 1; }
-        .logo-sub { color: #666; font-size: 14px; text-transform: uppercase; letter-spacing: 5px; margin-top: 18px; }
-        .ml1 { font-weight: 900; font-size: 2.0em; color: var(--energetic-blue); position: relative; margin: 0; min-height: 1.2em; }
-        .ml1 .letter { display: inline-block; line-height: 1em; }
-
-        select { 
-            width: 100%; max-width: 280px; padding: 15px; border-radius: 12px; 
-            border: 2.5px solid var(--energetic-blue); font-size: 16px; margin-top: 60px; margin-bottom: 25px; 
-            background: white; color: var(--energetic-blue); font-weight: bold; outline: none;
-        }
-        .btn-start { 
-            background: var(--energetic-blue); color: white; padding: 16px 85px; border-radius: 35px; 
-            border: none; font-size: 18px; font-weight: bold; cursor: pointer;
-        }
-
-        /* 填报页 */
-        #screen-list { background: var(--bg-white); min-height: 100vh; padding-top: 60px; box-sizing: border-box; }
+        .logo-text { color: var(--energetic-blue); font-size: 54px; font-weight: 900; font-style: italic; }
+        
+        /* 列表页 */
+        #screen-list { padding-top: 60px; }
         .top-bar { 
             position: fixed; top: 0; width: 100%; height: 60px; background: white; 
             display: flex; align-items: center; justify-content: space-between; padding: 0 15px; 
             box-sizing: border-box; z-index: 1000; border-bottom: 2px solid var(--energetic-blue); 
         }
-        .btn-export-email { background: var(--success-green); color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+        .btn-export { background: var(--success-green); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; }
 
-        /* Location 区域：矢车菊蓝方案 */
+        /* 货位标题：矢车菊蓝 */
         .loc-header { 
-            background: var(--cornflower-blue); 
-            color: white; padding: 10px 15px; font-size: 14px; font-weight: bold; 
-            position: sticky; top: 60px; z-index: 90; 
-            letter-spacing: 1px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: var(--cornflower-blue); color: white; padding: 10px 15px; 
+            font-weight: bold; position: sticky; top: 60px; z-index: 90; 
         }
         
-        .item-row { background: white; display: flex; align-items: center; padding: 12px 15px; border-bottom: 1px solid #f0f0f0; }
-        .item-code { flex: 1; font-family: 'SF Mono', monospace; font-size: 16px; font-weight: 600; color: #333; }
+        .item-row { display: flex; align-items: center; padding: 12px 15px; border-bottom: 1px solid #f0f0f0; }
+        .item-code { flex: 1; font-weight: 600; color: #333; }
         
-        /* 数量输入框：强制正整数 */
+        /* 输入框：仅限正整数 */
         .input-qty { 
-            width: 95px; height: 40px; border: 2px solid #ddd; border-radius: 8px; 
-            text-align: center; font-size: 20px; color: var(--energetic-blue); font-weight: bold; 
+            width: 80px; height: 35px; border: 2px solid #ddd; border-radius: 6px; 
+            text-align: center; font-size: 18px; font-weight: bold; color: var(--energetic-blue);
         }
         .hidden { display: none !important; }
     </style>
@@ -75,36 +51,28 @@
 <body>
 
 <div id="screen-welcome">
-    <div class="logo-box"><div class="logo-text">Energetic</div><div class="logo-sub">Smarter Lighting</div></div>
-    <h1 class="ml1"><span class="text-wrapper"><span class="letters">STOCKTAKE 2025</span></span></h1>
-    <select id="auditor-select">
+    <div class="logo-text">Energetic</div>
+    <select id="auditor-select" style="width: 250px; padding: 10px; margin: 40px 0;">
         <option value="">-- CHOOSE YOUR ID --</option>
         <script>for(let i=1; i<=20; i++){ let id="Aud."+(i<10?"0"+i:i); document.write(`<option value="${id}">${id}</option>`); }</script>
-    </select>
-    <button class="btn-start" onclick="startAudit()">START</button>
+    </select><br>
+    <button class="btn-start" onclick="startAudit()" style="padding: 15px 60px; background: var(--energetic-blue); color: white; border-radius: 30px; border: none; font-weight: bold;">START</button>
 </div>
 
 <div id="screen-list" class="hidden">
     <div class="top-bar">
-        <span id="display-id" style="font-weight: 900; color: var(--energetic-blue);"></span>
-        <button class="btn-export-email" onclick="exportData()">EXPORT & EMAIL</button>
-        <span id="stat" style="font-size: 12px; font-weight: bold; color: #999;"></span>
+        <span id="display-id" style="font-weight: bold;"></span>
+        <button class="btn-export" onclick="exportData()">EXPORT EXCEL</button>
+        <span id="stat" style="font-size: 12px; color: #666;"></span>
     </div>
     <div id="render-target"></div>
 </div>
 
 <script>
-    function initAnim() {
-        var textWrapper = document.querySelector('.ml1 .letters');
-        textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
-        anime.timeline({loop: true}).add({ targets: '.ml1 .letter', scale: [0.3,1], opacity: [0,1], translateZ: 0, easing: "easeOutExpo", duration: 600, delay: (el, i) => 70 * (i+1) }).add({ targets: '.ml1', opacity: 0, duration: 1000, easing: "easeOutExpo", delay: 3500 });
-    }
-    window.onload = initAnim;
-
     if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); }
 
-    // --- 数据区 (粘贴 3000 行 JSON) ---
-    const masterData = [
+    // --- 这里的任务数据需要完整填写 ---
+const masterData = [
     {
         "Auditor": "Aud.01",
         "Location": "U1-A-01-02",
@@ -11587,55 +11555,82 @@
     }
 ];
 
-    let currentAuditor = ""; let myTasks = [];
+    let currentAuditor = ""; 
+    let myTasks = [];
 
     function startAudit() {
         let aud = document.getElementById('auditor-select').value;
         if(!aud) return alert("Select ID");
-        currentAuditor = aud; myTasks = masterData.filter(d => d.Auditor === aud);
+        currentAuditor = aud;
+        myTasks = masterData.filter(d => d.Auditor === aud);
         document.getElementById('display-id').innerText = aud;
         render();
         document.getElementById('screen-welcome').classList.add('hidden');
         document.getElementById('screen-list').classList.remove('hidden');
-        window.scrollTo(0, 0);
     }
 
     function render() {
         const target = document.getElementById('render-target');
         const saved = JSON.parse(localStorage.getItem('audit_' + currentAuditor) || "{}");
         let html = ''; let lastLoc = ''; let done = 0;
+
         myTasks.forEach(item => {
-            if(item.Location !== lastLoc) { html += `<div class="loc-header">${item.Location}</div>`; lastLoc = item.Location; }
-            let val = saved[item.Code] || ""; if(val !== "") done++;
-            // 重点：使用 type="tel" + 正则过滤，实现严格正整数输入
+            if(item.Location !== lastLoc) {
+                html += `<div class="loc-header">${item.Location}</div>`;
+                lastLoc = item.Location;
+            }
+            // 兼容性读取：先找新Key，再找旧Key
+            let val = saved[item.Location + "_" + item.Code] || saved[item.Code] || "";
+            if(val !== "") done++;
+
             html += `
                 <div class="item-row">
                     <div class="item-code">${item.Code}</div>
                     <input type="tel" class="input-qty" value="${val}" 
-                        oninput="this.value=this.value.replace(/\\D/g,''); save('${item.Code}', this.value)" 
+                        oninput="this.value=this.value.replace(/\\D/g,''); save('${item.Code}', '${item.Location}', this.value)" 
                         placeholder="0">
                 </div>`;
         });
         target.innerHTML = html;
-        document.getElementById('stat').innerText = `${done}/${myTasks.length}`;
+        updateStat();
     }
 
-    function save(code, val) {
+    function save(code, loc, val) {
         let saved = JSON.parse(localStorage.getItem('audit_' + currentAuditor) || "{}");
-        saved[code] = val;
+        // 核心修复：存储 Key 包含货位
+        saved[loc + "_" + code] = val;
         localStorage.setItem('audit_' + currentAuditor, JSON.stringify(saved));
-        document.getElementById('stat').innerText = `${Object.values(saved).filter(v=>v!=="").length}/${myTasks.length}`;
+        updateStat();
+    }
+
+    function updateStat() {
+        const saved = JSON.parse(localStorage.getItem('audit_' + currentAuditor) || "{}");
+        // 统计已填写的项 (这里简单统计saved的长度)
+        const count = Object.values(saved).filter(v => v !== "").length;
+        document.getElementById('stat').innerText = `${count} / ${myTasks.length}`;
     }
 
     async function exportData() {
         const saved = JSON.parse(localStorage.getItem('audit_' + currentAuditor) || "{}");
-        const results = myTasks.map(item => ({ "Auditor": item.Auditor, "Location": item.Location, "Code": item.Code, "Count": saved[item.Code] || 0 }));
-        const ws = XLSX.utils.json_to_sheet(results);
+        
+        // 核心修复：基于 myTasks 原始数组映射，确保不重不漏，顺序一致
+        const exportResults = myTasks.map(item => {
+            const count = saved[item.Location + "_" + item.Code] || saved[item.Code] || 0;
+            return {
+                "Auditor": item.Auditor,
+                "Location": item.Location,
+                "Item Code": item.Code,
+                "Quantity": count
+            };
+        });
+
+        const ws = XLSX.utils.json_to_sheet(exportResults);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Stocktake");
-        const buf = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-        const file = new File([buf], `Stock_${currentAuditor}.xlsx`, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-        if (navigator.share) { await navigator.share({ files: [file], title: 'Stocktake Result' }); } else { XLSX.writeFile(wb, `Stock_${currentAuditor}.xlsx`); }
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+        
+        // 导出文件
+        const fileName = `Stock_${currentAuditor}_${new Date().toISOString().slice(0,10)}.xlsx`;
+        XLSX.writeFile(wb, fileName);
     }
 </script>
 </body>
